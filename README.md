@@ -41,8 +41,8 @@ As the guide grows (mailers, jobs, auth, and more), this app grows with it.
 ## Setup
 
 ```bash
-git clone https://github.com/coolprobn/minitest-rails-recipes.git
-cd minitest-rails-recipes
+git clone https://github.com/minitestrails/recipes.git
+cd recipes
 bin/setup --skip-server
 ```
 
@@ -82,14 +82,14 @@ test/
 └── fixtures/         # Shared test data (recipes.yml)
 ```
 
-New to the distinction? Read [Types of tests in the Rails world](https://minitestrails.com/guide/types-of-tests/) on the guide.
+New to the distinction? Read [Kinds of Rails tests](https://minitestrails.com/guide/kinds-of-rails-tests/) on the guide.
 
 ## Follow along
 
 | Step | Guide chapter |
 | --- | --- |
-| 1. Understand the approach | [Introduction](https://minitestrails.com/) |
-| 2. Set up this app | [Setting up the Recipe app](https://minitestrails.com/guide/setting-up-the-recipe-app/) |
+| 1. Understand the approach | [Introduction](https://minitestrails.com/guide/introduction/) |
+| 2. Set up this app | [Setting up Minitest](https://minitestrails.com/guide/setting-up-minitest/) |
 | 3. Write your first test | [Your first test](https://minitestrails.com/guide/your-first-test/) |
 | 4. Browse all 22 chapters | [Full guide index](https://minitestrails.com/guide/) |
 
@@ -104,7 +104,7 @@ New to the distinction? Read [Types of tests in the Rails world](https://minites
 
 ## Contributing
 
-Found a mismatch between a guide chapter and this repo? [Open an issue](https://github.com/coolprobn/minitest-rails-recipes/issues) or send a PR.
+Found a mismatch between a guide chapter and this repo? [Open an issue](https://github.com/minitestrails/recipes/issues) or send a PR.
 
 ## License
 

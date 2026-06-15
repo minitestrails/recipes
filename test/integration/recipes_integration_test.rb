@@ -5,6 +5,7 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   test "lists recipes" do
     get recipes_url
     assert_response :success
+    assert_match recipes(:pancakes).title, response.body
   end
 
   test "creates a recipe" do
@@ -17,6 +18,11 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to recipe_url(Recipe.last)
     follow_redirect!
+    assert_response :success
+  end
+
+  test "shows a recipe" do
+    get recipe_url(recipes(:pancakes))
     assert_response :success
   end
 end

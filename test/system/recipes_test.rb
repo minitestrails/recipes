@@ -7,4 +7,3 @@ class RecipesTest < ApplicationSystemTestCase
     assert_selector "h1", text: "Recipes"
   end
 end
-

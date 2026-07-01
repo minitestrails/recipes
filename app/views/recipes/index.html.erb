@@ -4,6 +4,17 @@
 
 <h1>Recipes</h1>
 
+<%= form_with url: recipes_path, method: :get, local: true, class: "recipe-filters" do %>
+  <label for="quick">Show</label>
+  <%= select_tag :quick,
+        options_for_select(
+          [["All recipes", ""], ["Quick recipes (under 30 min)", "1"]],
+          params[:quick]
+        ),
+        id: "quick" %>
+  <%= submit_tag "Apply filter" %>
+<% end %>
+
 <div id="recipes">
   <% @recipes.each do |recipe| %>
     <%= render recipe %>

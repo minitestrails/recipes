@@ -1,0 +1,10 @@
+# test/fixtures/steps.yml
+preheat:
+  recipe: pancakes
+  position: 1
+  instruction: Preheat the pan.
+
+simmer:
+  recipe: lentil_soup
+  position: 1
+  instruction: Simmer lentils until tender.

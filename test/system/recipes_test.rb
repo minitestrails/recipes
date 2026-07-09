@@ -16,9 +16,16 @@ class RecipesTest < ApplicationSystemTestCase
 
   test "creates a recipe" do
     visit new_recipe_url
-    fill_in "Title", with: "Test tacos"
+    fill_in "Title", with: "Tomato soup"
+    fill_in "Name", with: "Tomatoes"
+    fill_in "Quantity", with: "400"
+    fill_in "Unit", with: "g"
+    fill_in "Position", with: "1"
+    fill_in "Instruction", with: "Simmer until the tomatoes soften"
     click_on "Create Recipe"
-    assert_text "Test tacos"
+    assert_text "Tomato soup"
+    assert_text "Tomatoes (400 g)"
+    assert_text "Simmer until the tomatoes soften"
   end
 
   test "updates a recipe" do
@@ -32,9 +39,7 @@ class RecipesTest < ApplicationSystemTestCase
   test "destroys a recipe" do
     recipe = recipes(:lentil_soup)
     visit recipe_url(recipe)
-    accept_confirm do
-      click_on "Destroy this recipe"
-    end
+    accept_confirm { click_on "Destroy this recipe" }
     assert_no_text recipe.title
   end
 end

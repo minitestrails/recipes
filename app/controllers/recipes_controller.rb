@@ -13,6 +13,8 @@ class RecipesController < ApplicationController
   # GET /recipes/new
   def new
     @recipe = Recipe.new
+    @recipe.ingredients.build
+    @recipe.steps.build
   end
 
   # GET /recipes/1/edit
@@ -80,6 +82,17 @@ class RecipesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def recipe_params
-    params.expect(recipe: %i[title description prep_time servings])
+    params.expect(
+      recipe: [
+        :title,
+        :description,
+        :prep_time,
+        :servings,
+        {
+          ingredients_attributes: [%i[id name quantity unit _destroy]],
+          steps_attributes: [%i[id position instruction _destroy]]
+        }
+      ]
+    )
   end
 end

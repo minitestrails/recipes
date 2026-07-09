@@ -1,0 +1,12 @@
+# test/fixtures/ingredients.yml
+flour:
+  recipe: pancakes
+  name: Flour
+  quantity: 2
+  unit: cups
+
+salt:
+  recipe: pancakes
+  name: Salt
+  quantity: 1
+  unit: pinch

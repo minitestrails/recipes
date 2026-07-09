@@ -16,6 +16,17 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_match recipes(:pancakes).title, response.body
   end
 
+  test "shows ingredients and steps on the recipe page" do
+    get recipe_url(recipes(:pancakes))
+    assert_response :success
+    assert_match recipes(:pancakes).title, response.body
+    assert_select "h2", "Ingredients"
+    assert_match /Salt \(1 pinch\)/, response.body
+    assert_match /Flour \(2 cups\)/, response.body
+    assert_select "h2", "Steps"
+    assert_match steps(:preheat).instruction, response.body
+  end
+
   test "creates a recipe" do
     get new_recipe_url
     assert_response :success
@@ -30,16 +41,90 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_match "Lentil soup", response.body
   end
 
-  test "does not create a recipe with invalid data" do
+  test "creates a recipe with an ingredient and a step" do
     get new_recipe_url
     assert_response :success
-    assert_select "h1", "New recipe"
+    assert_match "New recipe", response.body
+    assert_select "h2", "Ingredients"
+    assert_select "h2", "Steps"
 
+    assert_difference %w[Recipe.count Ingredient.count Step.count], 1 do
+      post recipes_url,
+           params: {
+             recipe: {
+               title: "Tomato soup",
+               ingredients_attributes: {
+                 "0" => {
+                   name: "Tomatoes",
+                   quantity: "400",
+                   unit: "g"
+                 }
+               },
+               steps_attributes: {
+                 "0" => {
+                   position: "1",
+                   instruction: "Simmer until the tomatoes soften"
+                 }
+               }
+             }
+           }
+    end
+    assert_redirected_to recipe_url(Recipe.last)
+    follow_redirect!
+    assert_response :success
+    assert_match /Tomatoes \(400 g\)/, response.body
+    assert_match "Simmer until the tomatoes soften", response.body
+  end
+
+  test "does not create a recipe with invalid data" do
     assert_no_difference("Recipe.count") do
       post recipes_url, params: { recipe: { title: "" } }
     end
     assert_response :unprocessable_entity
     assert_match /prohibited this recipe from being saved/i, response.body
+    assert_select "h1", "New recipe"
+  end
+
+  test "does not create a recipe with invalid ingredient" do
+    assert_no_difference %w[Recipe.count Ingredient.count] do
+      post recipes_url,
+           params: {
+             recipe: {
+               title: "Tomato soup",
+               ingredients_attributes: {
+                 "0" => {
+                   name: "Tomatoes",
+                   quantity: "-1",
+                   unit: "cups"
+                 }
+               }
+             }
+           }
+    end
+    assert_response :unprocessable_entity
+    assert_match /prohibited this recipe from being saved/i, response.body
+    assert_match /ingredients quantity must be greater than 0/i, response.body
+    assert_select "h1", "New recipe"
+  end
+
+  test "does not create a recipe with invalid step" do
+    assert_no_difference %w[Recipe.count Step.count] do
+      post recipes_url,
+           params: {
+             recipe: {
+               title: "Tomato soup",
+               steps_attributes: {
+                 "0" => {
+                   position: "1",
+                   instruction: ""
+                 }
+               }
+             }
+           }
+    end
+    assert_response :unprocessable_entity
+    assert_match /prohibited this recipe from being saved/i, response.body
+    assert_select "li", text: /steps instruction can't be blank/i
     assert_select "h1", "New recipe"
   end
 
@@ -60,6 +145,37 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_response :success
     assert_match "Extra fluffy pancakes", response.body
+  end
+
+  test "adds an ingredient and a step when editing a recipe" do
+    recipe = recipes(:pancakes)
+
+    assert_difference %w[Ingredient.count Step.count], 1 do
+      patch recipe_url(recipe),
+            params: {
+              recipe: {
+                title: recipe.title,
+                ingredients_attributes: {
+                  "0" => {
+                    name: "Pepper",
+                    quantity: "1",
+                    unit: "pinch"
+                  }
+                },
+                steps_attributes: {
+                  "0" => {
+                    position: "2",
+                    instruction: "Flip and serve."
+                  }
+                }
+              }
+            }
+    end
+    assert_redirected_to recipe_url(recipe)
+    follow_redirect!
+    assert_response :success
+    assert_match /Pepper \(1 pinch\)/, response.body
+    assert_match "Flip and serve.", response.body
   end
 
   test "destroys a recipe" do

@@ -2,6 +2,26 @@
 
 <%= render @recipe %>
 
+<% if @recipe.ingredients.any? %>
+  <h2>Ingredients</h2>
+  <ul>
+    <% @recipe.ingredients.each do |ingredient| %>
+      <li>
+        <%= ingredient.name %><% if ingredient.quantity.present? %> (<%= number_with_precision(ingredient.quantity, precision: 2, strip_insignificant_zeros: true) %><% if ingredient.unit.present? %> <%= ingredient.unit %><% end %>)<% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @recipe.steps.any? %>
+  <h2>Steps</h2>
+  <ol>
+    <% @recipe.steps.order(:position).each do |step| %>
+      <li><%= step.instruction %></li>
+    <% end %>
+  </ol>
+<% end %>
+
 <div>
   <%= link_to "Edit this recipe", edit_recipe_path(@recipe) %> |
   <%= link_to "Back to recipes", recipes_path %>

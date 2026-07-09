@@ -31,6 +31,34 @@
     <%= form.number_field :servings %>
   </div>
 
+  <h2>Ingredients</h2>
+  <%= form.fields_for :ingredients do |ingredient_form| %>
+    <div>
+      <%= ingredient_form.label :name %>
+      <%= ingredient_form.text_field :name %>
+    </div>
+    <div>
+      <%= ingredient_form.label :quantity %>
+      <%= ingredient_form.number_field :quantity, step: 0.01 %>
+    </div>
+    <div>
+      <%= ingredient_form.label :unit %>
+      <%= ingredient_form.text_field :unit %>
+    </div>
+  <% end %>
+
+  <h2>Steps</h2>
+  <%= form.fields_for :steps do |step_form| %>
+    <div>
+      <%= step_form.label :position %>
+      <%= step_form.number_field :position %>
+    </div>
+    <div>
+      <%= step_form.label :instruction %>
+      <%= step_form.textarea :instruction %>
+    </div>
+  <% end %>
+
   <div>
     <%= form.submit %>
   </div>

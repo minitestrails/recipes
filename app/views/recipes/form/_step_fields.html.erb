@@ -1,0 +1,16 @@
+<%# app/views/recipes/form/_step_fields.html.erb %>
+<div data-nested-form-target="row" data-new-record="<%= form.object.new_record? %>">
+  <%= form.hidden_field :id %>
+  <%= form.hidden_field :_destroy, value: "0" %>
+
+  <div>
+    <%= form.label :position %>
+    <%= form.number_field :position %>
+  </div>
+  <div>
+    <%= form.label :instruction %>
+    <%= form.text_area :instruction %>
+  </div>
+
+  <button type="button" data-action="nested-form#remove">Remove step</button>
+</div>

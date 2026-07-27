@@ -21,8 +21,8 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match recipes(:pancakes).title, response.body
     assert_select "h2", "Ingredients"
-    assert_match /Salt \(1 pinch\)/, response.body
-    assert_match /Flour \(2 cups\)/, response.body
+    assert_match "Salt (1 pinch)", response.body
+    assert_match "Flour (2 cups)", response.body
     assert_select "h2", "Steps"
     assert_match steps(:preheat).instruction, response.body
   end
@@ -72,7 +72,7 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_redirected_to recipe_url(Recipe.last)
     follow_redirect!
     assert_response :success
-    assert_match /Tomatoes \(400 g\)/, response.body
+    assert_match "Tomatoes (400 g)", response.body
     assert_match "Simmer until the tomatoes soften", response.body
   end
 
@@ -174,7 +174,7 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_redirected_to recipe_url(recipe)
     follow_redirect!
     assert_response :success
-    assert_match /Pepper \(1 pinch\)/, response.body
+    assert_match "Pepper (1 pinch)", response.body
     assert_match "Flip and serve.", response.body
   end
 
@@ -198,5 +198,39 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match recipes(:pancakes).title, response.body
     assert_no_match recipes(:lentil_soup).title, response.body
+  end
+
+  test "removes existing ingredients and steps when updating a recipe" do
+    recipe = recipes(:pancakes)
+    salt = ingredients(:salt)
+    preheat = steps(:preheat)
+
+    assert_difference %w[Ingredient.count Step.count], -1 do
+      patch recipe_url(recipe),
+            params: {
+              recipe: {
+                title: recipe.title,
+                ingredients_attributes: {
+                  "0" => {
+                    id: salt.id,
+                    _destroy: "1"
+                  }
+                },
+                steps_attributes: {
+                  "0" => {
+                    id: preheat.id,
+                    _destroy: "1"
+                  }
+                }
+              }
+            }
+    end
+
+    assert_redirected_to recipe_url(recipe)
+    follow_redirect!
+    assert_response :success
+    assert_no_match salt.name, response.body
+    assert_no_match preheat.instruction, response.body
+    assert_match "Flour (2 cups)", response.body
   end
 end

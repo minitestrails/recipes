@@ -31,9 +31,35 @@ class RecipesTest < ApplicationSystemTestCase
   test "updates a recipe" do
     recipe = recipes(:pancakes)
     visit edit_recipe_url(recipe)
+
     fill_in "Title", with: "Extra fluffy pancakes"
+
+    click_on "Add ingredient"
+    all("input[name*='[ingredients_attributes]'][name*='[name]']").last.set(
+      "Onion"
+    )
+
+    click_on "Add step"
+    all("textarea[name*='[steps_attributes]'][name*='[instruction]']").last.set(
+      "Flip when bubbles form"
+    )
+
+    click_on "Add ingredient"
+    all("button", text: "Remove ingredient").last.click
+
+    within find(
+             "input[name*='[ingredients_attributes]'][name*='[name]'][value='Salt']"
+           ).ancestor("[data-nested-form-target='row']") do
+      click_on "Remove ingredient"
+    end
+
     click_on "Update Recipe"
+
     assert_text "Extra fluffy pancakes"
+    assert_no_text "Salt"
+    assert_text "Flour"
+    assert_text "Onion"
+    assert_text "Flip when bubbles form"
   end
 
   test "destroys a recipe" do

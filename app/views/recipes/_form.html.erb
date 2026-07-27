@@ -1,3 +1,4 @@
+<%# app/views/recipes/_form.html.erb (nested sections) %>
 <%= form_with(model: recipe) do |form| %>
   <% if recipe.errors.any? %>
     <div style="color: red">
@@ -31,33 +32,39 @@
     <%= form.number_field :servings %>
   </div>
 
-  <h2>Ingredients</h2>
-  <%= form.fields_for :ingredients do |ingredient_form| %>
-    <div>
-      <%= ingredient_form.label :name %>
-      <%= ingredient_form.text_field :name %>
+  <div data-controller="nested-form">
+    <h2>Ingredients</h2>
+    <div data-nested-form-target="container">
+      <%= form.fields_for :ingredients do |ingredient_form| %>
+        <%= render "recipes/form/ingredient_fields", form: ingredient_form %>
+      <% end %>
     </div>
-    <div>
-      <%= ingredient_form.label :quantity %>
-      <%= ingredient_form.number_field :quantity, step: 0.01 %>
-    </div>
-    <div>
-      <%= ingredient_form.label :unit %>
-      <%= ingredient_form.text_field :unit %>
-    </div>
-  <% end %>
 
-  <h2>Steps</h2>
-  <%= form.fields_for :steps do |step_form| %>
-    <div>
-      <%= step_form.label :position %>
-      <%= step_form.number_field :position %>
+    <template data-nested-form-target="template">
+      <%= form.fields_for :ingredients, Ingredient.new, child_index: "NEW_RECORD" do |ingredient_form| %>
+        <%= render "recipes/form/ingredient_fields", form: ingredient_form %>
+      <% end %>
+    </template>
+
+    <button type="button" data-action="nested-form#add">Add ingredient</button>
+  </div>
+
+  <div data-controller="nested-form">
+    <h2>Steps</h2>
+    <div data-nested-form-target="container">
+      <%= form.fields_for :steps do |step_form| %>
+        <%= render "recipes/form/step_fields", form: step_form %>
+      <% end %>
     </div>
-    <div>
-      <%= step_form.label :instruction %>
-      <%= step_form.textarea :instruction %>
-    </div>
-  <% end %>
+
+    <template data-nested-form-target="template">
+      <%= form.fields_for :steps, Step.new, child_index: "NEW_RECORD" do |step_form| %>
+        <%= render "recipes/form/step_fields", form: step_form %>
+      <% end %>
+    </template>
+
+    <button type="button" data-action="nested-form#add">Add step</button>
+  </div>
 
   <div>
     <%= form.submit %>

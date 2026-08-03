@@ -1,11 +1,13 @@
+<%# app/views/recipes/index.html.erb %>
 <p style="color: green"><%= notice %></p>
 
 <% content_for :title, "Recipes" %>
 
 <h1>Recipes</h1>
 
-<%= form_with url: recipes_path, method: :get, local: true, class: "recipe-filters" do %>
-  <label for="quick">Show</label>
+<%= form_with url: recipes_path, method: :get, class: "recipe-filters",
+      data: { turbo_frame: "recipes" } do %>
+  <%= label_tag :quick, "Show" %>
   <%= select_tag :quick,
         options_for_select(
           [["All recipes", ""], ["Quick recipes (under 30 min)", "1"]],
@@ -15,13 +17,10 @@
   <%= submit_tag "Apply filter" %>
 <% end %>
 
-<div id="recipes">
+<%= turbo_frame_tag "recipes" do %>
   <% @recipes.each do |recipe| %>
     <%= render recipe %>
-    <p>
-      <%= link_to "Show this recipe", recipe %>
-    </p>
   <% end %>
-</div>
+<% end %>
 
 <%= link_to "New recipe", new_recipe_path %>

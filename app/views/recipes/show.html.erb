@@ -1,13 +1,17 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @recipe %>
+<%= render @recipe, for_show: true %>
 
 <% if @recipe.ingredients.any? %>
   <h2>Ingredients</h2>
-  <ul>
+  <ul id="ingredients">
     <% @recipe.ingredients.each do |ingredient| %>
-      <li>
+      <li id="<%= dom_id(ingredient) %>">
         <%= ingredient.name %><% if ingredient.quantity.present? %> (<%= number_with_precision(ingredient.quantity, precision: 2, strip_insignificant_zeros: true) %><% if ingredient.unit.present? %> <%= ingredient.unit %><% end %>)<% end %>
+        <%= button_to "Remove",
+              recipe_ingredient_path(@recipe, ingredient),
+              method: :delete,
+              data: { turbo_confirm: "Remove this ingredient?" } %>
       </li>
     <% end %>
   </ul>
@@ -15,9 +19,15 @@
 
 <% if @recipe.steps.any? %>
   <h2>Steps</h2>
-  <ol>
+  <ol id="steps">
     <% @recipe.steps.order(:position).each do |step| %>
-      <li><%= step.instruction %></li>
+      <li id="<%= dom_id(step) %>">
+        <%= step.instruction %>
+        <%= button_to "Remove",
+              recipe_step_path(@recipe, step),
+              method: :delete,
+              data: { turbo_confirm: "Remove this step?" } %>
+      </li>
     <% end %>
   </ol>
 <% end %>
@@ -25,6 +35,4 @@
 <div>
   <%= link_to "Edit this recipe", edit_recipe_path(@recipe) %> |
   <%= link_to "Back to recipes", recipes_path %>
-
-  <%= button_to "Destroy this recipe", @recipe, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
 </div>

@@ -1,3 +1,7 @@
+<%# app/views/recipes/_recipe.html.erb %>
+<% for_show = local_assigns.fetch(:for_show, false) %>
+<% destroy_url = for_show ? recipe_path(recipe, format: :html) : recipe %>
+
 <div id="<%= dom_id recipe %>">
   <div>
     <strong>Title:</strong>
@@ -19,4 +23,11 @@
     <%= recipe.servings %>
   </div>
 
+  <% unless for_show %>
+    <p>
+      <%= link_to "Show this recipe", recipe %>
+    </p>
+  <% end %>
+
+  <%= button_to "Destroy this recipe", destroy_url, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
 </div>

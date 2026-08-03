@@ -64,6 +64,7 @@ class RecipesController < ApplicationController
     @recipe.destroy!
 
     respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(@recipe) }
       format.html do
         redirect_to recipes_path,
                     notice: "Recipe was successfully destroyed.",

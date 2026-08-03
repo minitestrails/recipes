@@ -65,7 +65,61 @@ class RecipesTest < ApplicationSystemTestCase
   test "destroys a recipe" do
     recipe = recipes(:lentil_soup)
     visit recipe_url(recipe)
-    accept_confirm { click_on "Destroy this recipe" }
+
+    accept_confirm do
+      click_on "Destroy this recipe"
+    end
+
+    assert_current_path recipes_path
     assert_no_text recipe.title
+  end
+
+  test "destroys a recipe from the list" do
+    recipe = recipes(:lentil_soup)
+    visit recipes_url
+
+    assert_text recipe.title
+    assert_text recipes(:pancakes).title
+
+    accept_confirm do
+      within("##{dom_id(recipe)}") { click_on "Destroy this recipe" }
+    end
+
+    assert_current_path recipes_path
+    assert_no_text recipe.title
+    assert_text recipes(:pancakes).title
+  end
+
+  test "removes ingredients and steps from the detail page" do
+    recipe = recipes(:pancakes)
+    visit recipe_url(recipe)
+
+    assert_text "Salt"
+    assert_text "Flour"
+    assert_text steps(:preheat).instruction
+
+    accept_confirm do
+      within("##{dom_id(ingredients(:salt))}") { click_on "Remove" }
+    end
+
+    accept_confirm do
+      within("##{dom_id(steps(:preheat))}") { click_on "Remove" }
+    end
+
+    assert_no_text "Salt"
+    assert_text "Flour"
+    assert_no_text steps(:preheat).instruction
+  end
+
+  test "filters the list" do
+    visit recipes_url
+    assert_text recipes(:pancakes).title
+    assert_text recipes(:lentil_soup).title
+
+    select "Quick recipes (under 30 min)", from: "Show"
+    click_on "Apply filter"
+
+    assert_text recipes(:pancakes).title
+    assert_no_text recipes(:lentil_soup).title
   end
 end

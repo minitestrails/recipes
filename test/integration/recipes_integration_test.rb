@@ -233,4 +233,21 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_no_match preheat.instruction, response.body
     assert_match "Flour (2 cups)", response.body
   end
+
+  test "removes ingredients and steps from the detail page" do
+    recipe = recipes(:pancakes)
+    salt = ingredients(:salt)
+    preheat = steps(:preheat)
+
+    assert_difference ["Ingredient.count", "Step.count"], -1 do
+      delete recipe_ingredient_url(recipe, salt), as: :turbo_stream
+      delete recipe_step_url(recipe, preheat), as: :turbo_stream
+    end
+
+    get recipe_url(recipe)
+    assert_response :success
+    assert_no_match salt.name, response.body
+    assert_no_match preheat.instruction, response.body
+    assert_match "Flour (2 cups)", response.body
+  end
 end

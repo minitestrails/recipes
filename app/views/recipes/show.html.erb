@@ -1,3 +1,4 @@
+<%# app/views/recipes/show.html.erb (bottom links) %>
 <p style="color: green"><%= notice %></p>
 
 <%= render @recipe, for_show: true %>
@@ -8,10 +9,12 @@
     <% @recipe.ingredients.each do |ingredient| %>
       <li id="<%= dom_id(ingredient) %>">
         <%= ingredient.name %><% if ingredient.quantity.present? %> (<%= number_with_precision(ingredient.quantity, precision: 2, strip_insignificant_zeros: true) %><% if ingredient.unit.present? %> <%= ingredient.unit %><% end %>)<% end %>
-        <%= button_to "Remove",
-              recipe_ingredient_path(@recipe, ingredient),
-              method: :delete,
-              data: { turbo_confirm: "Remove this ingredient?" } %>
+        <% if authenticated? %>
+          <%= button_to "Remove",
+                recipe_ingredient_path(@recipe, ingredient),
+                method: :delete,
+                data: { turbo_confirm: "Remove this ingredient?" } %>
+        <% end %>
       </li>
     <% end %>
   </ul>
@@ -23,16 +26,21 @@
     <% @recipe.steps.order(:position).each do |step| %>
       <li id="<%= dom_id(step) %>">
         <%= step.instruction %>
-        <%= button_to "Remove",
-              recipe_step_path(@recipe, step),
-              method: :delete,
-              data: { turbo_confirm: "Remove this step?" } %>
+        <% if authenticated? %>
+          <%= button_to "Remove",
+                recipe_step_path(@recipe, step),
+                method: :delete,
+                data: { turbo_confirm: "Remove this step?" } %>
+        <% end %>
       </li>
     <% end %>
   </ol>
 <% end %>
 
 <div>
-  <%= link_to "Edit this recipe", edit_recipe_path(@recipe) %> |
+  <% if authenticated? %>
+    <%= link_to "Edit this recipe", edit_recipe_path(@recipe) %>
+  <% end %>
+
   <%= link_to "Back to recipes", recipes_path %>
 </div>

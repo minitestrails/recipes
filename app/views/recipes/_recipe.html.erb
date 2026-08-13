@@ -25,9 +25,12 @@
 
   <% unless for_show %>
     <p>
-      <%= link_to "Show this recipe", recipe %>
+      <%= link_to "Show this recipe", recipe, data: { turbo_frame: "_top" } %>
     </p>
   <% end %>
 
-  <%= button_to "Destroy this recipe", destroy_url, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+
+  <% if authenticated? %>
+    <%= button_to "Destroy this recipe", destroy_url, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+  <% end %>
 </div>

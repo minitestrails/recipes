@@ -23,4 +23,7 @@
   <% end %>
 <% end %>
 
-<%= link_to "New recipe", new_recipe_path %>
+
+<% if authenticated? %>
+  <%= link_to "New recipe", new_recipe_path %>
+<% end %>

@@ -8,12 +8,16 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_match "Recipes", response.body
     assert_match recipes(:pancakes).title, response.body
     assert_select "#recipes div[id^='recipe_']", count: Recipe.count
+    assert_select "a", text: "New recipe", count: 0
+    assert_select "button", text: "Destroy this recipe", count: 0
   end
 
   test "shows a recipe" do
     get recipe_url(recipes(:pancakes))
     assert_response :success
     assert_match recipes(:pancakes).title, response.body
+    assert_select "a", text: "Edit this recipe", count: 0
+    assert_select "button", text: "Destroy this recipe", count: 0
   end
 
   test "shows ingredients and steps on the recipe page" do
@@ -25,9 +29,12 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_match "Flour (2 cups)", response.body
     assert_select "h2", "Steps"
     assert_match steps(:preheat).instruction, response.body
+    assert_select "button", text: "Remove", count: 0
   end
 
   test "creates a recipe" do
+    sign_in_as users(:alice)
+
     get new_recipe_url
     assert_response :success
     assert_match "New recipe", response.body
@@ -42,6 +49,8 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "creates a recipe with an ingredient and a step" do
+    sign_in_as users(:alice)
+
     get new_recipe_url
     assert_response :success
     assert_match "New recipe", response.body
@@ -77,6 +86,8 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "does not create a recipe with invalid data" do
+    sign_in_as users(:alice)
+
     assert_no_difference("Recipe.count") do
       post recipes_url, params: { recipe: { title: "" } }
     end
@@ -86,6 +97,8 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "does not create a recipe with invalid ingredient" do
+    sign_in_as users(:alice)
+
     assert_no_difference %w[Recipe.count Ingredient.count] do
       post recipes_url,
            params: {
@@ -108,6 +121,8 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "does not create a recipe with invalid step" do
+    sign_in_as users(:alice)
+
     assert_no_difference %w[Recipe.count Step.count] do
       post recipes_url,
            params: {
@@ -129,6 +144,7 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "updates a recipe" do
+    sign_in_as users(:alice)
     recipe = recipes(:pancakes)
 
     get edit_recipe_url(recipe)
@@ -148,6 +164,7 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "adds an ingredient and a step when editing a recipe" do
+    sign_in_as users(:alice)
     recipe = recipes(:pancakes)
 
     assert_difference %w[Ingredient.count Step.count], 1 do
@@ -179,6 +196,7 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "destroys a recipe" do
+    sign_in_as users(:alice)
     recipe = recipes(:lentil_soup)
 
     assert_difference("Recipe.count", -1) { delete recipe_url(recipe) }
@@ -201,6 +219,8 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "removes existing ingredients and steps when updating a recipe" do
+    sign_in_as users(:alice)
+
     recipe = recipes(:pancakes)
     salt = ingredients(:salt)
     preheat = steps(:preheat)
@@ -235,11 +255,13 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "removes ingredients and steps from the detail page" do
+    sign_in_as users(:alice)
+
     recipe = recipes(:pancakes)
     salt = ingredients(:salt)
     preheat = steps(:preheat)
 
-    assert_difference ["Ingredient.count", "Step.count"], -1 do
+    assert_difference %w[Ingredient.count Step.count], -1 do
       delete recipe_ingredient_url(recipe, salt), as: :turbo_stream
       delete recipe_step_url(recipe, preheat), as: :turbo_stream
     end

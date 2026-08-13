@@ -15,6 +15,8 @@ class RecipesTest < ApplicationSystemTestCase
   end
 
   test "creates a recipe" do
+    sign_in_to_ui_as users(:alice)
+
     visit new_recipe_url
     fill_in "Title", with: "Tomato soup"
     fill_in "Name", with: "Tomatoes"
@@ -29,6 +31,8 @@ class RecipesTest < ApplicationSystemTestCase
   end
 
   test "updates a recipe" do
+    sign_in_to_ui_as users(:alice)
+
     recipe = recipes(:pancakes)
     visit edit_recipe_url(recipe)
 
@@ -63,6 +67,8 @@ class RecipesTest < ApplicationSystemTestCase
   end
 
   test "destroys a recipe" do
+    sign_in_to_ui_as users(:alice)
+
     recipe = recipes(:lentil_soup)
     visit recipe_url(recipe)
 
@@ -75,6 +81,8 @@ class RecipesTest < ApplicationSystemTestCase
   end
 
   test "destroys a recipe from the list" do
+    sign_in_to_ui_as users(:alice)
+
     recipe = recipes(:lentil_soup)
     visit recipes_url
 
@@ -91,6 +99,8 @@ class RecipesTest < ApplicationSystemTestCase
   end
 
   test "removes ingredients and steps from the detail page" do
+    sign_in_to_ui_as users(:alice)
+
     recipe = recipes(:pancakes)
     visit recipe_url(recipe)
 

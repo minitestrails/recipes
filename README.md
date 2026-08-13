@@ -1,4 +1,4 @@
-# Recipes — companion app for [Minitest Rails](https://minitestrails.com/)
+# Cookbook — companion app for [Minitest Rails](https://minitestrails.com/)
 
 This is the hands-on Rails app behind [**Minitest Rails**](https://minitestrails.com/), a free guide to testing Rails applications with Minitest — no second test stack, no guesswork.
 
@@ -19,14 +19,14 @@ The guide walks through each layer in plain language. This repo is the finished 
 
 ## What's in the app
 
-A small CRUD app for managing recipes:
+Cookbook starts as simple recipe CRUD and grows with the guide:
 
 | Layer | What you'll find |
 | --- | --- |
-| **Model** | `Recipe` with validations |
-| **Controller** | Full scaffolded `RecipesController` |
-| **Views** | Standard Rails ERB templates |
-| **Tests** | Model, integration, controller, and system tests under `test/` |
+| **Models** | `Recipe` plus nested resources (ingredients, steps), validations, and scopes |
+| **Controllers** | Recipes plus auth, passwords, and related flows |
+| **Views** | Standard Rails ERB templates with Hotwire (Turbo Frames / Streams) |
+| **Tests** | Model, integration, and system tests under `test/` |
 | **CI** | Linting, security scans, and test jobs in `.github/workflows/ci.yml` |
 
 As the guide grows (mailers, jobs, auth, and more), this app grows with it.
@@ -37,6 +37,7 @@ As the guide grows (mailers, jobs, auth, and more), this app grows with it.
 - Bundler
 - SQLite (included via the `sqlite3` gem)
 - Chrome/Chromium for system tests (headless, via Selenium)
+- libvips (for Active Storage image variants via `ruby-vips`)
 
 ## Setup
 
@@ -76,10 +77,10 @@ Green output here is the goal every chapter builds toward.
 ```
 test/
 ├── models/           # Unit tests — validations, business logic
-├── integration/      # HTTP-level flows (list, create, show)
+├── integration/      # HTTP-level flows (list, create, show, auth)
 ├── controllers/      # Scaffold-generated controller coverage
 ├── system/           # Browser tests with Capybara
-└── fixtures/         # Shared test data (recipes.yml)
+└── fixtures/         # Shared test data (recipes.yml, …)
 ```
 
 New to the distinction? Read [Kinds of Rails tests](https://minitestrails.com/guide/kinds-of-rails-tests/) on the guide.
@@ -91,7 +92,7 @@ New to the distinction? Read [Kinds of Rails tests](https://minitestrails.com/gu
 | 1. Understand the approach | [Introduction](https://minitestrails.com/guide/introduction/) |
 | 2. Set up this app | [Setting up Minitest](https://minitestrails.com/guide/setting-up-minitest/) |
 | 3. Write your first test | [Your first test](https://minitestrails.com/guide/your-first-test/) |
-| 4. Browse all 22 chapters | [Full guide index](https://minitestrails.com/guide/) |
+| 4. Browse all chapters | [Full guide index](https://minitestrails.com/guide/) |
 
 ## Tech stack
 

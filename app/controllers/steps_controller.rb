@@ -17,4 +17,3 @@ class StepsController < ApplicationController
     @step = @recipe.steps.find(params[:id])
   end
 end
-

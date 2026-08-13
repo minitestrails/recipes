@@ -17,4 +17,3 @@ class IngredientsController < ApplicationController
     @ingredient = @recipe.ingredients.find(params[:id])
   end
 end
-

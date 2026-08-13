@@ -42,4 +42,3 @@ class PasswordIntegrationTest < ActionDispatch::IntegrationTest
     assert_redirected_to edit_password_url(token)
   end
 end
-

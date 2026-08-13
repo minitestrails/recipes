@@ -24,4 +24,3 @@ class PasswordTest < ApplicationSystemTestCase
     assert_text "Sign out"
   end
 end
-

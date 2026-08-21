@@ -4,10 +4,11 @@ pancakes:
   description: Weekend breakfast
   prep_time: 15
   servings: 4
+  user: alice
 
 lentil_soup:
   title: Lentil soup
   description: Simple dinner
   prep_time: 30
   servings: 6
-
+  user: alice

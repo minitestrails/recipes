@@ -5,4 +5,14 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  rescue_from ActionPolicy::Unauthorized, with: :user_not_authorized
+
+  private
+
+  def user_not_authorized(_exception)
+    flash[:alert] = "You are not authorized to perform this action."
+
+    redirect_back fallback_location: root_path
+  end
 end

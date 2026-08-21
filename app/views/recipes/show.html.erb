@@ -1,4 +1,4 @@
-<%# app/views/recipes/show.html.erb (bottom links) %>
+<%# app/views/recipes/show.html.erb %>
 <%= render @recipe, for_show: true %>
 
 <% if @recipe.ingredients.any? %>
@@ -7,7 +7,7 @@
     <% @recipe.ingredients.each do |ingredient| %>
       <li id="<%= dom_id(ingredient) %>">
         <%= ingredient.name %><% if ingredient.quantity.present? %> (<%= number_with_precision(ingredient.quantity, precision: 2, strip_insignificant_zeros: true) %><% if ingredient.unit.present? %> <%= ingredient.unit %><% end %>)<% end %>
-        <% if authenticated? %>
+        <% if authenticated? && allowed_to?(:destroy?, ingredient) %>
           <%= button_to "Remove",
                 recipe_ingredient_path(@recipe, ingredient),
                 method: :delete,
@@ -24,7 +24,7 @@
     <% @recipe.steps.order(:position).each do |step| %>
       <li id="<%= dom_id(step) %>">
         <%= step.instruction %>
-        <% if authenticated? %>
+        <% if authenticated? && allowed_to?(:destroy?, step) %>
           <%= button_to "Remove",
                 recipe_step_path(@recipe, step),
                 method: :delete,
@@ -36,7 +36,7 @@
 <% end %>
 
 <div>
-  <% if authenticated? %>
+  <% if authenticated? && allowed_to?(:edit?, @recipe) %>
     <%= link_to "Edit this recipe", edit_recipe_path(@recipe) %>
   <% end %>
 

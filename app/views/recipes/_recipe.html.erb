@@ -30,7 +30,7 @@
   <% end %>
 
 
-  <% if authenticated? %>
+  <% if authenticated? && allowed_to?(:destroy?, recipe) %>
     <%= button_to "Destroy this recipe", destroy_url, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
   <% end %>
 </div>

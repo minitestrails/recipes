@@ -1,7 +1,6 @@
 class RecipesController < ApplicationController
   allow_unauthenticated_access only: %i[index show]
   before_action :set_recipe, only: %i[show edit update destroy]
-  before_action :ensure_recipe_owner, only: %i[edit update destroy]
 
   # GET /recipes or /recipes.json
   def index
@@ -15,17 +14,23 @@ class RecipesController < ApplicationController
   # GET /recipes/new
   def new
     @recipe = Recipe.new
+
+    authorize! @recipe
+
     @recipe.ingredients.build
     @recipe.steps.build
   end
 
   # GET /recipes/1/edit
   def edit
+    authorize! @recipe
   end
 
   # POST /recipes or /recipes.json
   def create
     @recipe = current_user.recipes.build(recipe_params)
+
+    authorize! @recipe
 
     respond_to do |format|
       if @recipe.save
@@ -44,6 +49,8 @@ class RecipesController < ApplicationController
 
   # PATCH/PUT /recipes/1 or /recipes/1.json
   def update
+    authorize! @recipe
+
     respond_to do |format|
       if @recipe.update(recipe_params)
         format.html do
@@ -63,6 +70,8 @@ class RecipesController < ApplicationController
 
   # DELETE /recipes/1 or /recipes/1.json
   def destroy
+    authorize! @recipe
+
     @recipe.destroy!
 
     respond_to do |format|
@@ -81,12 +90,6 @@ class RecipesController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_recipe
     @recipe = Recipe.find(params.expect(:id))
-  end
-
-  def ensure_recipe_owner
-    return if @recipe.user == current_user
-
-    redirect_to @recipe, alert: "You are not authorized to modify this recipe."
   end
 
   # Only allow a list of trusted parameters through.

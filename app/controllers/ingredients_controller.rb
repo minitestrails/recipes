@@ -3,6 +3,8 @@ class IngredientsController < ApplicationController
   before_action :set_recipe, :set_ingredient
 
   def destroy
+    authorize! @ingredient
+
     @ingredient.destroy!
     render turbo_stream: turbo_stream.remove(@ingredient)
   end

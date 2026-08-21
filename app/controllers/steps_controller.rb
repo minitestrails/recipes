@@ -3,6 +3,8 @@ class StepsController < ApplicationController
   before_action :set_recipe, :set_step
 
   def destroy
+    authorize! @step
+
     @step.destroy!
     render turbo_stream: turbo_stream.remove(@step)
   end

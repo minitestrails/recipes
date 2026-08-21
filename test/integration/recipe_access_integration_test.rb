@@ -49,4 +49,20 @@ class RecipeAccessIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "button", text: "Destroy this recipe"
     assert_select "button", text: "Remove"
   end
+
+  test "non-owner cannot update a recipe" do
+    sign_in_as users(:bob)
+    recipe = recipes(:pancakes)
+
+    get edit_recipe_url(recipe)
+    assert_redirected_to recipe_url(recipe)
+    follow_redirect!
+    assert_match "You are not authorized to modify this recipe.", response.body
+
+    patch recipe_url(recipe), params: { recipe: { title: "Hacked pancakes" } }
+    assert_redirected_to recipe_url(recipe)
+    follow_redirect!
+    assert_match "You are not authorized to modify this recipe.", response.body
+    assert_not_equal "Hacked pancakes", recipe.reload.title
+  end
 end

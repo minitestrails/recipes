@@ -1,6 +1,7 @@
 class RecipesController < ApplicationController
   allow_unauthenticated_access only: %i[index show]
   before_action :set_recipe, only: %i[show edit update destroy]
+  before_action :ensure_recipe_owner, only: %i[edit update destroy]
 
   # GET /recipes or /recipes.json
   def index
@@ -80,6 +81,12 @@ class RecipesController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_recipe
     @recipe = Recipe.find(params.expect(:id))
+  end
+
+  def ensure_recipe_owner
+    return if @recipe.user == current_user
+
+    redirect_to @recipe, alert: "You are not authorized to modify this recipe."
   end
 
   # Only allow a list of trusted parameters through.

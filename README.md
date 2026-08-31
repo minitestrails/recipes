@@ -1,8 +1,8 @@
 # Cookbook — companion app for [Minitest Rails](https://minitestrails.com/)
 
-This is the hands-on Rails app behind [**Minitest Rails**](https://minitestrails.com/), a free guide to testing Rails applications with Minitest — no second test stack, no guesswork.
+This is the hands-on Rails app behind [**Minitest Rails**](https://minitestrails.com/), a free guide to testing Rails applications with Minitest. No second test stack. No guesswork.
 
-You follow one app from a simple Recipe scaffold through model tests, fixtures, integration tests, system tests, and CI. Clone this repo when you want a working reference beside the guide, or build along chapter by chapter and compare your work here.
+**Cookbook** is the example app you build through the guide. A recipe is one resource inside it. The app grows into nested associations, authentication, authorization, mailers, Turbo Frames and Streams, and CI. Clone this repo for a working reference beside the guide, or build chapter by chapter and compare your work here.
 
 **[Start the guide →](https://minitestrails.com/)**
 
@@ -10,9 +10,10 @@ You follow one app from a simple Recipe scaffold through model tests, fixtures, 
 
 Rails already ships Minitest. This app shows what a real, tested Rails 8 codebase looks like when you stick to defaults:
 
-- **Minitest** for unit, integration, and system tests
+- **Minitest** for model, integration, mailer, and system tests
 - **Fixtures** for fast, predictable test data
-- **Capybara + Selenium** for browser-level smoke tests
+- **Capybara + Selenium** for browser-level checks
+- **Action Policy** for authorization
 - **GitHub Actions** running the full suite on every push
 
 The guide walks through each layer in plain language. This repo is the finished reference you can run, read, and diff against as you learn.
@@ -23,21 +24,23 @@ Cookbook starts as simple recipe CRUD and grows with the guide:
 
 | Layer | What you'll find |
 | --- | --- |
-| **Models** | `Recipe` plus nested resources (ingredients, steps), validations, and scopes |
-| **Controllers** | Recipes plus auth, passwords, and related flows |
-| **Views** | Standard Rails ERB templates with Hotwire (Turbo Frames / Streams) |
-| **Tests** | Model, integration, and system tests under `test/` |
-| **CI** | Linting, security scans, and test jobs in `.github/workflows/ci.yml` |
+| **Models** | `Recipe`, nested `Ingredient` and `Step`, validations, and scopes |
+| **Auth** | Rails 8 authentication, sessions, and password reset |
+| **Authorization** | Action Policy ownership rules for recipes, ingredients, and steps |
+| **Mailers** | Recipe share mail and password reset mail, with previews and tests |
+| **Views** | ERB plus Hotwire (Turbo Frames, Turbo Streams, nested forms) |
+| **Tests** | Model, integration, mailer, and system tests under `test/` |
+| **CI** | Lint, security scans, and test jobs in `.github/workflows/ci.yml` |
 
-As the guide grows (mailers, jobs, auth, and more), this app grows with it.
+Later guide chapters (jobs, external HTTP mocks, coverage habits) keep using this same app as the through-line.
 
 ## Requirements
 
 - Ruby **4.0.2** (see `.ruby-version`)
 - Bundler
-- SQLite (included via the `sqlite3` gem)
-- Chrome/Chromium for system tests (headless, via Selenium)
-- libvips (for Active Storage image variants via `ruby-vips`)
+- SQLite (via the `sqlite3` gem)
+- Chrome or Chromium for system tests (headless Selenium)
+- libvips (Active Storage variants via `ruby-vips`; CI installs this on test jobs)
 
 ## Setup
 
@@ -60,13 +63,13 @@ Visit [http://localhost:3000/recipes](http://localhost:3000/recipes).
 ## Running tests
 
 ```bash
-# Full test suite (models, integration, controllers)
+# Full non-system suite (models, integration, mailers, controllers)
 bin/rails test
 
-# System tests only (requires Chrome/Chromium)
+# System tests only (needs Chrome or Chromium)
 bin/rails test:system
 
-# Everything CI runs locally
+# Same checks CI runs locally
 bin/ci
 ```
 
@@ -76,11 +79,12 @@ Green output here is the goal every chapter builds toward.
 
 ```
 test/
-├── models/           # Unit tests — validations, business logic
-├── integration/      # HTTP-level flows (list, create, show, auth)
-├── controllers/      # Scaffold-generated controller coverage
+├── models/           # Validations, scopes, model behavior
+├── integration/      # HTTP flows (CRUD, auth, authorization)
+├── mailers/          # Delivery and body assertions (+ previews/)
+├── controllers/      # Scaffold and session/password coverage
 ├── system/           # Browser tests with Capybara
-└── fixtures/         # Shared test data (recipes.yml, …)
+└── fixtures/         # Shared YAML data (users, recipes, …)
 ```
 
 New to the distinction? Read [Kinds of Rails tests](https://minitestrails.com/guide/kinds-of-rails-tests/) on the guide.
@@ -92,7 +96,11 @@ New to the distinction? Read [Kinds of Rails tests](https://minitestrails.com/gu
 | 1. Understand the approach | [Introduction](https://minitestrails.com/guide/introduction/) |
 | 2. Set up this app | [Setting up Minitest](https://minitestrails.com/guide/setting-up-minitest/) |
 | 3. Write your first test | [Your first test](https://minitestrails.com/guide/your-first-test/) |
-| 4. Browse all chapters | [Full guide index](https://minitestrails.com/guide/) |
+| 4. Auth and password reset | [Testing authentication](https://minitestrails.com/guide/testing-authentication/) |
+| 5. Ownership rules | [Authorization testing](https://minitestrails.com/guide/authorization-testing/) |
+| 6. Mailers | [Testing mailers](https://minitestrails.com/guide/testing-mailers/) |
+| 7. Turbo Frames and Streams | [Testing Turbo Frames and Streams](https://minitestrails.com/guide/testing-turbo-frames-and-streams/) |
+| 8. Browse all chapters | [Full guide index](https://minitestrails.com/guide/) |
 
 ## Tech stack
 
@@ -100,6 +108,7 @@ New to the distinction? Read [Kinds of Rails tests](https://minitestrails.com/gu
 - Minitest (Rails default)
 - SQLite
 - Hotwire (Turbo + Stimulus)
+- Action Policy
 - Capybara + Selenium WebDriver
 - GitHub Actions CI
 
@@ -109,7 +118,7 @@ Found a mismatch between a guide chapter and this repo? [Open an issue](https://
 
 ## License
 
-This companion app is open source. The [Minitest Rails guide](https://minitestrails.com/) is free to read — help keep it that way by sharing it with anyone learning Rails testing.
+This companion app is open source. The [Minitest Rails guide](https://minitestrails.com/) is free to read. Share it with anyone learning Rails testing.
 
 ---
 

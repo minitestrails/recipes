@@ -45,8 +45,8 @@ Later guide chapters (jobs, external HTTP mocks, coverage habits) keep using thi
 ## Setup
 
 ```bash
-git clone https://github.com/minitestrails/recipes.git
-cd recipes
+git clone https://github.com/minitestrails/cookbook.git
+cd cookbook
 bin/setup --skip-server
 ```
 
@@ -114,7 +114,7 @@ New to the distinction? Read [Kinds of Rails tests](https://minitestrails.com/gu
 
 ## Contributing
 
-Found a mismatch between a guide chapter and this repo? [Open an issue](https://github.com/minitestrails/recipes/issues) or send a PR.
+Found a mismatch between a guide chapter and this repo? [Open an issue](https://github.com/minitestrails/cookbook/issues) or send a PR.
 
 ## License
 

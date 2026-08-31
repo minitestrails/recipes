@@ -1,0 +1,10 @@
+<%# app/views/recipe_mailer/share.html.erb %>
+<p><%= @heading %></p>
+
+<h1><%= @recipe.title %></h1>
+
+<p>
+  You can view the recipe by clicking the link below:
+
+  <%= link_to "View recipe", recipe_url(@recipe) %>
+</p>

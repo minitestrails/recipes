@@ -1,5 +1,6 @@
 <%# app/views/recipes/show.html.erb %>
 <%= render @recipe, for_show: true %>
+<%= render "recipes/share_modal", recipe: @recipe %>
 
 <% if @recipe.ingredients.any? %>
   <h2>Ingredients</h2>

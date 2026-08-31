@@ -1,0 +1,21 @@
+<%# app/views/recipes/_share_modal.html.erb %>
+<button type="button" command="show-modal" commandfor="share-recipe-<%= recipe.id %>">
+  Share by email
+</button>
+
+<dialog id="share-recipe-<%= recipe.id %>">
+  <h2>Share <%= recipe.title %></h2>
+
+  <%= form_with url: share_recipe_path(recipe), scope: :recipe, method: :post do |form| %>
+    <fieldset class="fieldset">
+      <%= form.label :recipient_email, "Friend's email", class: "label" %>
+      <%= form.email_field :recipient_email, class: "input input-bordered w-full", required: true %>
+    </fieldset>
+
+    <%= form.submit "Send recipe", class: "btn btn-primary" %>
+  <% end %>
+
+  <form method="dialog">
+    <button value="cancel">Cancel</button>
+  </form>
+</dialog>

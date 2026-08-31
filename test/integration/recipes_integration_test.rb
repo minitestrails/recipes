@@ -272,4 +272,46 @@ class RecipesIntegrationTest < ActionDispatch::IntegrationTest
     assert_no_match preheat.instruction, response.body
     assert_match "Flour (2 cups)", response.body
   end
+
+  test "shares a recipe" do
+    sign_in_as users(:alice)
+    recipe = recipes(:pancakes)
+
+    get recipe_url(recipe)
+    assert_response :success
+    assert_select "dialog"
+    assert_select "input[name='recipe[recipient_email]']"
+
+    assert_emails 1 do
+      post share_recipe_url(recipe),
+           params: {
+             recipe: {
+               recipient_email: "friend@example.com"
+             }
+           }
+    end
+
+    assert_redirected_to recipe_url(recipe)
+    follow_redirect!
+    assert_response :success
+    assert_match recipe.title, response.body
+  end
+
+  test "guest shares a recipe" do
+    recipe = recipes(:pancakes)
+
+    assert_emails 1 do
+      post share_recipe_url(recipe),
+           params: {
+             recipe: {
+               recipient_email: "friend@example.com"
+             }
+           }
+    end
+
+    assert_redirected_to recipe_url(recipe)
+    follow_redirect!
+    assert_response :success
+    assert_match recipe.title, response.body
+  end
 end

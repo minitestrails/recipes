@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
-  allow_unauthenticated_access only: %i[index show]
-  before_action :set_recipe, only: %i[show edit update destroy]
+  allow_unauthenticated_access only: %i[index show share]
+  before_action :set_recipe, only: %i[show edit update destroy share]
 
   # GET /recipes or /recipes.json
   def index
@@ -83,6 +83,14 @@ class RecipesController < ApplicationController
       end
       format.json { head :no_content }
     end
+  end
+
+  def share
+    recipient = params[:recipe][:recipient_email]
+    sender = Current.user&.email_address
+
+    RecipeMailer.share(@recipe, recipient, sender).deliver_now
+    redirect_to @recipe, notice: "Recipe shared with #{recipient}."
   end
 
   private

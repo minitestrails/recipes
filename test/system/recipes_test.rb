@@ -72,9 +72,7 @@ class RecipesTest < ApplicationSystemTestCase
     recipe = recipes(:lentil_soup)
     visit recipe_url(recipe)
 
-    accept_confirm do
-      click_on "Destroy this recipe"
-    end
+    accept_confirm { click_on "Destroy this recipe" }
 
     assert_current_path recipes_path
     assert_no_text recipe.title
@@ -131,5 +129,17 @@ class RecipesTest < ApplicationSystemTestCase
 
     assert_text recipes(:pancakes).title
     assert_no_text recipes(:lentil_soup).title
+  end
+
+  test "shares a recipe" do
+    recipe = recipes(:pancakes)
+
+    visit recipe_url(recipe)
+    click_on "Share by email"
+    fill_in "Friend's email", with: "friend@example.com"
+    click_on "Send recipe"
+
+    assert_text "Recipe shared with friend@example.com"
+    assert_text recipe.title
   end
 end
